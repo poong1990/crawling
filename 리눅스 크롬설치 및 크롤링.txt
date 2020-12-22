@@ -1,0 +1,71 @@
+# 크롬 설치
+
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+sudo apt-get update
+sudo apt-get install google-chrome-stable
+
+# 크롬 버전확인
+
+google-chrome --version
+
+# 설치된 크롬 버전과 맞는 크롬드라이버 파일링크
+# 중간에 버전입력된 부분만 수정하면 된다.
+wget -N https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip
+
+# 압축풀고 저장경로 바꾸고 권한설정
+unzip chromedriver_linux64.zip
+sudo mv chromedriver /usr/bin/chromedriver
+sudo chown root:root /usr/bin/chromedriver
+sudo chmod a+x /usr/bin/chromedriver
+
+# 크롬 웹브라우저 실행가능 설정
+
+gedit /usr/bin/google-chrome
+
+    # 맨밑에 줄을 바꿔준다
+
+    exec -a "$0" "$HERE/chrome "$@" --no-sandbox --user-data-dir
+
+# 필요한 모듈 설치
+
+sudo pip3 install xlrd
+sudo apt-get install xvfb
+sudo pip3 install pyvirtualdisplay
+sudo pip3 install selenium
+sudo pip3 install pandas
+sudo pip3 install re
+sudo pip3 install bs4
+sudo pip3 install time
+
+# 파이썬 실행
+
+python3
+
+# 파이썬 내에서 모듈 임포트
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
+import time
+import pandas as pd 
+from selenium.webdriver.common.action_chains import ActionChains
+import re
+from pyvirtualdisplay import Display
+
+# display 설정
+
+display = Display(visible=0, size=(1920, 1080))
+display.start()
+
+# 크롬드라이버 추가설정
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
+# 크롬드라이버 경로설정
+
+path = '/usr/bin/chromedriver'
+driver = webdriver.Chrome(path, chrome_options = chrome_options)
